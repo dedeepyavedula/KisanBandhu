@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILE: app/src/main/res/values/colors.xml -->
+<resources>
+    <!-- Agriculture-inspired green palette -->
+    <color name="green_primary">#2E7D32</color>
+    <color name="green_dark">#1B5E20</color>
+    <color name="green_light">#A5D6A7</color>
+    <color name="brown_soil">#795548</color>
+    <color name="yellow_wheat">#FBC02D</color>
+    <color name="background_light">#F1F8E9</color>
+    <color name="text_dark">#212121</color>
+    <color name="text_light">#FFFFFF</color>
+    <color name="alert_red">#C62828</color>
+    <color name="alert_orange">#EF6C00</color>
+    <color name="alert_blue">#1565C0</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>

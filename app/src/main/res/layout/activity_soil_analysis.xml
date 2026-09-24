@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILE: app/src/main/res/layout/activity_soil_analysis.xml -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Soil Analysis"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="@color/green_dark"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Summary card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="3dp"
+            app:cardBackgroundColor="@color/white"
+            android:layout_marginBottom="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView android:id="@+id/tvSoilType" style="@style/AnalysisValue" />
+                <TextView android:id="@+id/tvFertility" style="@style/AnalysisValue" />
+                <TextView android:id="@+id/tvPH" style="@style/AnalysisValue" />
+                <TextView android:id="@+id/tvLocation" style="@style/AnalysisValue" />
+                <TextView android:id="@+id/tvIrrigation" style="@style/AnalysisValue" />
+                <TextView android:id="@+id/tvSeason" style="@style/AnalysisValue" />
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="What this means for your field"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"
+            android:layout_marginBottom="6dp" />
+
+        <TextView
+            android:id="@+id/tvAnalysisExplanation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:textColor="@color/text_dark"
+            android:lineSpacingExtra="4dp" />
+
+        <Button
+            android:id="@+id/btnContinueToCrops"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/green_primary"
+            android:textColor="@color/white"
+            android:text="Continue to Crop Recommendations" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILE: app/src/main/res/values/strings.xml -->
+<resources>
+    <string name="app_name">KisanBandhu</string>
+    <string name="tagline">Smart Agriculture Assistant</string>
+
+    <!-- Home screen card titles -->
+    <string name="card_crop_recommend">Crop Recommendations</string>
+    <string name="card_weather">Weather</string>
+    <string name="card_calendar">Crop Calendar</string>
+    <string name="card_fertilizer">Fertilizer Recommendations</string>
+    <string name="card_pesticide">Pest / Disease Guidance</string>
+    <string name="card_reminders">Reminders</string>
+    <string name="card_leaf_disease">Leaf Disease Detection</string>
+</resources>

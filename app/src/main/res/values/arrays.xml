@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILE: app/src/main/res/values/arrays.xml -->
+<resources>
+
+    <string-array name="soil_type_array">
+        <item>Select Soil Type</item>
+        <item>Sandy</item>
+        <item>Clay</item>
+        <item>Loamy</item>
+        <item>Silt</item>
+        <item>Black soil</item>
+        <item>Red soil</item>
+        <item>Alluvial soil</item>
+    </string-array>
+
+    <string-array name="fertility_array">
+        <item>Select Fertility Level</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <string-array name="state_array">
+        <item>Select State</item>
+        <item>Maharashtra</item>
+        <item>Punjab</item>
+        <item>Haryana</item>
+        <item>Uttar Pradesh</item>
+        <item>Madhya Pradesh</item>
+        <item>Gujarat</item>
+        <item>Rajasthan</item>
+        <item>Karnataka</item>
+        <item>Tamil Nadu</item>
+        <item>Andhra Pradesh</item>
+        <item>Telangana</item>
+        <item>West Bengal</item>
+        <item>Bihar</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="season_array">
+        <item>Select Season</item>
+        <item>Kharif</item>
+        <item>Rabi</item>
+        <item>Zaid</item>
+    </string-array>
+
+</resources>

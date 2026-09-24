@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILE: app/src/main/res/layout/activity_soil_input.xml -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_light">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Farmer Profile &amp; Soil Information"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/green_dark"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Soil type -->
+        <TextView style="@style/FieldLabel" android:text="Soil Type" />
+        <Spinner
+            android:id="@+id/spinnerSoilType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/soil_type_array" />
+
+        <!-- Soil pH (optional) -->
+        <TextView style="@style/FieldLabel" android:text="Soil pH (optional, 0-14)" />
+        <EditText
+            android:id="@+id/etSoilPH"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. 6.5"
+            android:inputType="numberDecimal" />
+
+        <!-- Fertility -->
+        <TextView style="@style/FieldLabel" android:text="Soil Fertility Level" />
+        <Spinner
+            android:id="@+id/spinnerFertility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/fertility_array" />
+
+        <!-- State -->
+        <TextView style="@style/FieldLabel" android:text="State" />
+        <Spinner
+            android:id="@+id/spinnerState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/state_array" />
+
+        <!-- District -->
+        <TextView style="@style/FieldLabel" android:text="District" />
+        <EditText
+            android:id="@+id/etDistrict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. Nashik"
+            android:inputType="textCapWords" />
+
+        <!-- Irrigation -->
+        <TextView style="@style/FieldLabel" android:text="Irrigation Availability" />
+        <RadioGroup
+            android:id="@+id/radioGroupIrrigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioRainfed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rain-fed" />
+
+            <RadioButton
+                android:id="@+id/radioIrrigated"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="Irrigated" />
+        </RadioGroup>
+
+        <!-- Season -->
+        <TextView style="@style/FieldLabel" android:text="Season" />
+        <Spinner
+            android:id="@+id/spinnerSeason"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/season_array" />
+
+        <Button
+            android:id="@+id/btnAnalyze"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/green_primary"
+            android:textColor="@color/white"
+            android:text="Analyze Soil &amp; Conditions" />
+
+    </LinearLayout>
+</ScrollView>

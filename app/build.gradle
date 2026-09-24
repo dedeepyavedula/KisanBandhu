@@ -1,0 +1,49 @@
+// FILE: app/build.gradle
+// Add these dependencies inside the "dependencies { ... }" block of your
+// EXISTING app-level build.gradle (the one Android Studio generated for you).
+// Do not replace the whole file — just make sure these lines are present.
+
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.example.kisanbandhu'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.kisanbandhu"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    // Core Android + Material Design (CardView, buttons, TextInputLayout, etc.)
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
+
+    // RecyclerView - used later for crop recommendation cards, calendar, reminders
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+
+    // Gson - used later to parse local JSON crop/fertilizer/pest data
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+}

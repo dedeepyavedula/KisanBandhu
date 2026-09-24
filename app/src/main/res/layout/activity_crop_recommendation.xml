@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- FILE: app/src/main/res/layout/activity_crop_recommendation.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Recommended Crops"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_dark"
+        android:layout_marginBottom="4dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Based on your soil, season, irrigation and fertility (rule-based, not AI)"
+        android:textSize="12sp"
+        android:textColor="@color/brown_soil"
+        android:layout_marginBottom="12dp" />
+
+    <TextView
+        android:id="@+id/tvNoResults"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No strongly suitable crops found for this combination. Try adjusting your soil profile."
+        android:textColor="@color/text_dark"
+        android:visibility="gone"
+        android:layout_marginTop="24dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCrops"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>
