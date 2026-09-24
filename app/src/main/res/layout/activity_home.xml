@@ -12,12 +12,11 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header: greeting + currently selected crop -->
         <TextView
             android:id="@+id/tvGreeting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome, Farmer 👋"
+            android:text="Welcome, Farmer "
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/text_dark" />
@@ -49,7 +48,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="🌱  @string/card_crop_recommend" />
+                android:text="🌱crop recommendation" />
         </androidx.cardview.widget.CardView>
 
         <!-- ===== Feature card: Weather ===== -->
@@ -69,7 +68,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="🌦  @string/card_weather" />
+                android:text="🌦weather" />
         </androidx.cardview.widget.CardView>
 
         <!-- ===== Feature card: Crop Calendar ===== -->
@@ -89,7 +88,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="📅  @string/card_calendar" />
+                android:text="📅calendar" />
         </androidx.cardview.widget.CardView>
 
         <!-- ===== Feature card: Fertilizer ===== -->
@@ -109,7 +108,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="🧪  @string/card_fertilizer" />
+                android:text="🧪fertilizer" />
         </androidx.cardview.widget.CardView>
 
         <!-- ===== Feature card: Pest / Disease Guidance ===== -->
@@ -129,7 +128,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="🐛  @string/card_pesticide" />
+                android:text="🐛pesticide" />
         </androidx.cardview.widget.CardView>
 
         <!-- ===== Feature card: Reminders ===== -->
@@ -149,7 +148,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="🔔  @string/card_reminders" />
+                android:text="🔔 reminders" />
         </androidx.cardview.widget.CardView>
 
         <!-- ===== Feature card: Leaf Disease Detection ===== -->
@@ -169,7 +168,7 @@
                 android:padding="18dp"
                 android:textSize="17sp"
                 android:textColor="@color/text_dark"
-                android:text="🍃  @string/card_leaf_disease" />
+                android:text="🍃 leaf disease" />
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
