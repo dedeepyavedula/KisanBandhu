@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Placeholder screen - AI model (TensorFlow Lite) will be added later"
+            android:text="Upload a picture of your leaf, will detect if any disease"
             android:textSize="13sp"
             android:textColor="@color/brown_soil" />
 

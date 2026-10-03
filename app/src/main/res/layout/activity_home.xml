@@ -12,6 +12,18 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+       
+
+        <Button
+            android:id="@+id/btnLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:text="Logout"
+            android:textAllCaps="false" />
+
         <TextView
             android:id="@+id/tvGreeting"
             android:layout_width="match_parent"
@@ -151,7 +163,7 @@
                 android:text="🔔 reminders" />
         </androidx.cardview.widget.CardView>
 
-        <!-- ===== Feature card: Leaf Disease Detection ===== -->
+
         <androidx.cardview.widget.CardView
             android:id="@+id/cardLeafDisease"
             android:layout_width="match_parent"

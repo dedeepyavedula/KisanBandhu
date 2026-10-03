@@ -8,6 +8,9 @@ import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.example.kisanbandhu.activities.LoginActivity;
+import com.example.kisanbandhu.activities.RegisterActivity;
 import com.example.kisanbandhu.activities.HomeActivity;
 
 /**
@@ -47,8 +50,20 @@ public class MainActivity extends AppCompatActivity {
      * NOT bring the user back to the splash screen.
      */
     private void goToHomeScreen() {
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(intent);
+
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+
+            // User is already logged in
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+
+        } else {
+
+            // User is not logged in
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
+
         finish();
     }
 }

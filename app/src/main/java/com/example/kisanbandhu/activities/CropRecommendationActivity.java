@@ -1,4 +1,3 @@
-// FILE: app/src/main/java/com/example/kisanbandhu/activities/CropRecommendationActivity.java
 package com.example.kisanbandhu.activities;
 
 import android.content.Intent;
@@ -21,46 +20,89 @@ import com.example.kisanbandhu.utils.PrefsManager;
 
 import java.util.List;
 
-/**
- * SCREEN 4 - CROP RECOMMENDATIONS.
- *
- * Reads the saved Soil profile, runs it through CropRecommendationEngine,
- * and displays the resulting list as cards. Tapping a card currently
- * shows a Toast - Phase 4 will turn this into real crop selection
- * (CropSelectionActivity), saving the chosen crop via PrefsManager.
- */
 public class CropRecommendationActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private TextView tvNoResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_crop_recommendation);
 
+        recyclerView = findViewById(R.id.recyclerViewCrops);
+        tvNoResults = findViewById(R.id.tvNoResults);
+
         if (!PrefsManager.hasSoilProfile(this)) {
-            Toast.makeText(this, "Please fill in your soil information first", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, SoilInputActivity.class));
+            Toast.makeText(
+                    this,
+                    "Please fill in your soil information first",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            startActivity(
+                    new Intent(this, SoilInputActivity.class)
+            );
             finish();
             return;
         }
 
         Soil soil = PrefsManager.getSoilProfile(this);
-        List<CropRecommendation> recommendations = CropRecommendationEngine.getRecommendations(soil);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewCrops);
-        TextView tvNoResults = findViewById(R.id.tvNoResults);
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
 
-        if (recommendations.isEmpty()) {
-            tvNoResults.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            return;
-        }
+        // Load recommendations from Firestore
+        CropRecommendationEngine.getRecommendations(
+                soil,
+                new CropRecommendationEngine.OnRecommendationsLoadedListener() {
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        // Phase 4: tapping a card selects the crop and opens its dashboard.
-        CropAdapter adapter = new CropAdapter(this, recommendations, crop -> {
-            CropStageHelper.selectCrop(this, crop);
-            startActivity(new Intent(this, CropDashboardActivity.class));
-        });
-        recyclerView.setAdapter(adapter);
+                    @Override
+                    public void onSuccess(
+                            List<CropRecommendation> recommendations) {
+
+                        if (recommendations.isEmpty()) {
+                            tvNoResults.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                            return;
+                        }
+
+                        tvNoResults.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+
+                        CropAdapter adapter = new CropAdapter(
+                                CropRecommendationActivity.this,
+                                recommendations,
+                                crop -> {
+                                    CropStageHelper.selectCrop(
+                                            CropRecommendationActivity.this,
+                                            crop
+                                    );
+
+                                    startActivity(
+                                            new Intent(
+                                                    CropRecommendationActivity.this,
+                                                    CropDashboardActivity.class
+                                            )
+                                    );
+                                }
+                        );
+
+                        recyclerView.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                        Toast.makeText(
+                                CropRecommendationActivity.this,
+                                "Could not load recommendations: "
+                                        + e.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
     }
 }

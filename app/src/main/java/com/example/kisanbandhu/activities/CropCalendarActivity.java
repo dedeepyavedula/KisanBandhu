@@ -2,6 +2,7 @@ package com.example.kisanbandhu.activities;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kisanbandhu.R;
 import com.example.kisanbandhu.adapters.InfoAdapter;
-import com.example.kisanbandhu.data.CropData;
-import com.example.kisanbandhu.models.Crop;
-import com.example.kisanbandhu.models.GrowthStage;
 import com.example.kisanbandhu.models.InfoItem;
 import com.example.kisanbandhu.utils.CropStageHelper;
+import com.example.kisanbandhu.utils.FirestoreCropGuideManager;
+import com.example.kisanbandhu.utils.PrefsManager;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,48 +23,192 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/** PHASE 4 - CROP CALENDAR: growth-stage timeline, with real dates once sowing date is set. */
-public class CropCalendarActivity extends AppCompatActivity {
+public class CropCalendarActivity
+        extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private TextView tvTitle;
+    private TextView tvSubtitle;
+    private TextView tvEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_screen);
 
-        Crop crop = CropData.getSelectedCrop(this);
-        if (crop == null) {
-            Toast.makeText(this, "Please select a crop first", Toast.LENGTH_SHORT).show();
+        super.onCreate(savedInstanceState);
+
+        setContentView(
+                R.layout.activity_list_screen
+        );
+
+        recyclerView =
+                findViewById(R.id.recyclerView);
+
+        tvTitle =
+                findViewById(R.id.tvTitle);
+
+        tvSubtitle =
+                findViewById(R.id.tvSubtitle);
+
+        tvEmpty =
+                findViewById(R.id.tvEmpty);
+
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
+
+        String cropName =
+                PrefsManager.getString(
+                        this,
+                        PrefsManager.KEY_SELECTED_CROP,
+                        null
+                );
+
+        if (cropName == null) {
+
+            Toast.makeText(
+                    this,
+                    "Please select a crop first",
+                    Toast.LENGTH_SHORT
+            ).show();
+
             finish();
             return;
         }
 
-        ((TextView) findViewById(R.id.tvTitle)).setText(crop.getEmoji() + " " + crop.getName() + " Calendar");
-        boolean hasDate = CropStageHelper.hasSowingDate(this);
-        ((TextView) findViewById(R.id.tvSubtitle)).setText(hasDate
-                ? "Growth-stage timeline from your sowing date"
-                : "Showing day numbers. Set a sowing date on the dashboard to see real dates.");
+        loadGuide(cropName);
+    }
 
-        List<GrowthStage> stages = CropStageHelper.getStages(crop);
-        int current = CropStageHelper.getCurrentStageIndex(this, stages);
-        SimpleDateFormat fmt = new SimpleDateFormat("dd MMM", Locale.getDefault());
+    private void loadGuide(String cropName) {
 
-        List<InfoItem> items = new ArrayList<>();
-        for (int i = 0; i < stages.size(); i++) {
-            GrowthStage s = stages.get(i);
-            String when = "Day " + s.getStartDay() + " - " + s.getEndDay();
-            if (hasDate) {
-                long sow = CropStageHelper.getSowingDate(this);
-                when += "  (" + fmt.format(new Date(sow + s.getStartDay() * CropStageHelper.DAY_MS))
-                        + " - " + fmt.format(new Date(sow + s.getEndDay() * CropStageHelper.DAY_MS)) + ")";
-            }
-            boolean isCurrent = i == current;
-            items.add(new InfoItem((i + 1) + ". " + s.getName(),
-                    isCurrent ? "NOW" : "", Color.parseColor("#2E7D32"),
-                    when + "\n" + s.getActivity(), isCurrent));
+        new FirestoreCropGuideManager()
+                .getGuide(
+                        cropName,
+                        new FirestoreCropGuideManager.OnGuideLoadedListener() {
+
+                            @Override
+                            public void onSuccess(
+                                    FirestoreCropGuideManager.CropGuide guide) {
+
+                                showStages(guide);
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+
+                                Toast.makeText(
+                                        CropCalendarActivity.this,
+                                        "Could not load calendar: "
+                                                + e.getMessage(),
+                                        Toast.LENGTH_LONG
+                                ).show();
+                            }
+                        }
+                );
+    }
+
+    private void showStages(
+            FirestoreCropGuideManager.CropGuide guide) {
+
+        tvTitle.setText(
+                guide.cropName + " Calendar"
+        );
+
+        boolean hasDate =
+                CropStageHelper.hasSowingDate(this);
+
+        tvSubtitle.setText(
+                hasDate
+                        ? "Growth-stage timeline from your sowing date"
+                        : "Set a sowing date on the dashboard to see real dates."
+        );
+
+        List<FirestoreCropGuideManager.StageData> stages =
+                guide.stages;
+
+        if (stages.isEmpty()) {
+
+            tvEmpty.setText(
+                    "No crop calendar information available."
+            );
+
+            tvEmpty.setVisibility(View.VISIBLE);
+
+            return;
         }
 
-        RecyclerView rv = findViewById(R.id.recyclerView);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        rv.setAdapter(new InfoAdapter(items));
+        int current =
+                CropStageHelper.getCurrentStageIndex(
+                        this,
+                        stages
+                );
+
+        SimpleDateFormat fmt =
+                new SimpleDateFormat(
+                        "dd MMM",
+                        Locale.getDefault()
+                );
+
+        List<InfoItem> items =
+                new ArrayList<>();
+
+        for (int i = 0; i < stages.size(); i++) {
+
+            FirestoreCropGuideManager.StageData stage =
+                    stages.get(i);
+
+            String when =
+                    "Day "
+                            + stage.getStartDay()
+                            + " - "
+                            + stage.getEndDay();
+
+            if (hasDate) {
+
+                long sow =
+                        CropStageHelper.getSowingDate(this);
+
+                when +=
+                        " ("
+                                + fmt.format(
+                                new Date(
+                                        sow
+                                                + stage.getStartDay()
+                                                * CropStageHelper.DAY_MS
+                                )
+                        )
+                                + " - "
+                                + fmt.format(
+                                new Date(
+                                        sow
+                                                + stage.getEndDay()
+                                                * CropStageHelper.DAY_MS
+                                )
+                        )
+                                + ")";
+            }
+
+            boolean isCurrent =
+                    i == current;
+
+            items.add(
+                    new InfoItem(
+                            (i + 1)
+                                    + ". "
+                                    + stage.getName(),
+                            isCurrent ? "NOW" : "",
+                            Color.parseColor(
+                                    "#2E7D32"
+                            ),
+                            when
+                                    + "\n"
+                                    + stage.getActivity(),
+                            isCurrent
+                    )
+            );
+        }
+
+        recyclerView.setAdapter(
+                new InfoAdapter(items)
+        );
     }
 }

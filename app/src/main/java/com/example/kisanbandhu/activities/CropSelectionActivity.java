@@ -3,6 +3,7 @@ package com.example.kisanbandhu.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kisanbandhu.R;
 import com.example.kisanbandhu.adapters.CropAdapter;
-import com.example.kisanbandhu.data.CropData;
 import com.example.kisanbandhu.models.Crop;
 import com.example.kisanbandhu.models.CropRecommendation;
 import com.example.kisanbandhu.models.Soil;
@@ -21,44 +21,112 @@ import com.example.kisanbandhu.utils.PrefsManager;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * PHASE 4 - SELECT CROP.
- *
- * Lists every crop (recommended ones first, if a soil profile exists),
- * saves the tapped crop and opens its dashboard.
- */
 public class CropSelectionActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private TextView tvSelectionSubtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_crop_selection);
 
-        List<CropRecommendation> items = new ArrayList<>();
-        List<String> added = new ArrayList<>();
+        recyclerView =
+                findViewById(R.id.recyclerViewSelection);
+
+        tvSelectionSubtitle =
+                findViewById(R.id.tvSelectionSubtitle);
+
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this)
+        );
+
+        loadRecommendedCrops();
+    }
+
+    private void loadRecommendedCrops() {
 
         Soil soil = PrefsManager.getSoilProfile(this);
-        if (soil != null) {
-            for (CropRecommendation r : CropRecommendationEngine.getRecommendations(soil)) {
-                items.add(r);
-                added.add(r.getCrop().getName());
-            }
-        } else {
-            ((TextView) findViewById(R.id.tvSelectionSubtitle)).setText(
-                    "Tip: fill in your soil profile to see recommended crops first");
-        }
-        for (Crop crop : CropData.getAllCrops()) {
-            if (!added.contains(crop.getName())) {
-                items.add(new CropRecommendation(crop, 0, "Other"));
-            }
+
+        if (soil == null) {
+
+            tvSelectionSubtitle.setText(
+                    "Tip: fill in your soil profile to see recommended crops first"
+            );
+
+            Toast.makeText(
+                    this,
+                    "Please fill in your soil information first",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
         }
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewSelection);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new CropAdapter(this, items, crop -> {
-            CropStageHelper.selectCrop(this, crop);
-            startActivity(new Intent(this, CropDashboardActivity.class));
-            finish();
-        }));
+        CropRecommendationEngine.getRecommendations(
+                soil,
+                new CropRecommendationEngine.OnRecommendationsLoadedListener() {
+
+                    @Override
+                    public void onSuccess(
+                            List<CropRecommendation> recommendations) {
+
+                        showCrops(recommendations);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                        Toast.makeText(
+                                CropSelectionActivity.this,
+                                "Could not load crops: "
+                                        + e.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
+
+    private void showCrops(
+            List<CropRecommendation> recommendations) {
+
+        if (recommendations.isEmpty()) {
+
+            tvSelectionSubtitle.setText(
+                    "No suitable crops found for your soil conditions."
+            );
+
+            return;
+        }
+
+        tvSelectionSubtitle.setText(
+                "Recommended crops based on your soil and conditions"
+        );
+
+        CropAdapter adapter =
+                new CropAdapter(
+                        this,
+                        recommendations,
+                        crop -> {
+
+                            CropStageHelper.selectCrop(
+                                    this,
+                                    crop
+                            );
+
+                            startActivity(
+                                    new Intent(
+                                            this,
+                                            CropDashboardActivity.class
+                                    )
+                            );
+
+                            finish();
+                        }
+                );
+
+        recyclerView.setAdapter(adapter);
     }
 }

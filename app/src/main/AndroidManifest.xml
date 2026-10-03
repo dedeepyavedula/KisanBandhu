@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- FILE: app/src/main/AndroidManifest.xml -->
+<?xml version="1.0" encoding="utf-8"?><!-- FILE: app/src/main/AndroidManifest.xml -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Weather forecast (Phase 4) -->
@@ -11,7 +10,10 @@
 
     <!-- Leaf Disease Detection camera (asked at runtime) -->
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -19,6 +21,9 @@
         android:label="KisanBandhu"
         android:theme="@style/Theme.KisanBandhu"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false" />
 
         <!-- Splash screen - app entry point -->
         <activity
@@ -26,33 +31,66 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <!-- Phase 1 -->
-        <activity android:name=".activities.HomeActivity" android:exported="false" />
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="false" />
 
         <!-- Phase 2 -->
-        <activity android:name=".activities.SoilInputActivity" android:exported="false" />
-        <activity android:name=".activities.SoilAnalysisActivity" android:exported="false" />
+        <activity
+            android:name=".activities.SoilInputActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SoilAnalysisActivity"
+            android:exported="false" />
 
         <!-- Phase 3 -->
-        <activity android:name=".activities.CropRecommendationActivity" android:exported="false" />
+        <activity
+            android:name=".activities.CropRecommendationActivity"
+            android:exported="false" />
 
         <!-- Phase 4 -->
-        <activity android:name=".activities.CropSelectionActivity" android:exported="false" />
-        <activity android:name=".activities.CropDashboardActivity" android:exported="false" />
-        <activity android:name=".activities.CropCalendarActivity" android:exported="false" />
-        <activity android:name=".activities.FertilizerActivity" android:exported="false" />
-        <activity android:name=".activities.PesticideActivity" android:exported="false" />
-        <activity android:name=".activities.WeatherActivity" android:exported="false" />
-        <activity android:name=".activities.WeatherAlertsActivity" android:exported="false" />
-        <activity android:name=".activities.RemindersActivity" android:exported="false" />
-        <activity android:name=".activities.LeafDiseaseActivity" android:exported="false" />
+        <activity
+            android:name=".activities.CropSelectionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CropDashboardActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.CropCalendarActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.FertilizerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PesticideActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.WeatherActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.WeatherAlertsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.RemindersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LeafDiseaseActivity"
+            android:exported="false" />
 
-        <receiver android:name=".utils.ReminderReceiver" android:exported="false" />
+        <receiver
+            android:name=".utils.ReminderReceiver"
+            android:exported="false" />
 
+        <activity
+            android:name=".activities.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

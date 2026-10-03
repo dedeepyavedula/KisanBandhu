@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- FILE: app/src/main/res/values/strings.xml -->
+<?xml version="1.0" encoding="utf-8"?><!-- FILE: app/src/main/res/values/strings.xml -->
 <resources>
     <string name="app_name">KisanBandhu</string>
     <string name="tagline">Smart Agriculture Assistant</string>
