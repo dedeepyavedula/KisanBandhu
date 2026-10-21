@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background_light"
+    android:padding="16dp">
+
+    <!-- Header -->
+    <TextView
+        android:id="@+id/tvWeatherTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="🌦 Weather"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_dark" />
+
+    <TextView
+        android:id="@+id/tvWeatherLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Loading location..."
+        android:textSize="14sp"
+        android:textColor="@color/brown_soil" />
+
+    <!-- Current Weather Card -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        android:radius="20dp"
+        android:elevation="4dp"
+        android:backgroundTint="@color/green_primary">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tvCurrentCondition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Loading..."
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/tvCurrentTemperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="--°C"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white" />
+
+            <TextView
+                android:id="@+id/tvCurrentDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Humidity --%   •   Rain -- mm   •   Wind -- km/h"
+                android:textSize="14sp"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Alerts Button -->
+    <Button
+        android:id="@+id/btnWeatherAlerts"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="⚠ View Weather Alerts"
+        android:textAllCaps="false"
+        android:layout_marginBottom="12dp" />
+
+
+    <TextView
+        android:id="@+id/tvForecastHeading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="7-Day Forecast"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/green_dark"
+        android:layout_marginBottom="8dp" />
+
+    <ProgressBar
+        android:id="@+id/progressWeather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="visible" />
+
+    <!-- Forecast list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvWeatherForecast"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

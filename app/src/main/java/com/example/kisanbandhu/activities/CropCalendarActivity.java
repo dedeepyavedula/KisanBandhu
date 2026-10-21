@@ -109,9 +109,21 @@ public class CropCalendarActivity
     private void showStages(
             FirestoreCropGuideManager.CropGuide guide) {
 
-        tvTitle.setText(
-                guide.cropName + " Calendar"
-        );
+        String displayCropName = guide.cropName;
+
+        if (displayCropName == null
+                || displayCropName.trim().isEmpty()) {
+
+            displayCropName = PrefsManager.getString(
+                    this,
+                    PrefsManager.KEY_SELECTED_CROP,
+                    "Crop"
+            );
+        }
+
+        tvTitle.setText(displayCropName + " Calendar");
+
+        tvTitle.setText(displayCropName + " Calendar");
 
         boolean hasDate =
                 CropStageHelper.hasSowingDate(this);

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kisanbandhu.R;
+import com.example.kisanbandhu.activities.CropSelectionActivity;
 import com.example.kisanbandhu.models.Crop;
 import com.example.kisanbandhu.utils.CropStageHelper;
 import com.example.kisanbandhu.utils.FirestoreCropGuideManager;
@@ -24,31 +25,43 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class CropDashboardActivity
-        extends AppCompatActivity {
+public class CropDashboardActivity extends AppCompatActivity {
 
     private Crop crop;
-
     private FirestoreCropGuideManager.CropGuide guide;
+
+    private TextView tvDashCrop;
+    private TextView tvDashInfo;
+    private TextView tvDashStage;
+    private TextView tvDashActivity;
+    private TextView tvSowingDateDisplay;
+
+    private ProgressBar progressGrowth;
+    private Button btnSetSowingDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_crop_dashboard);
 
-        setContentView(
-                R.layout.activity_crop_dashboard
+        // Bind views from activity_crop_dashboard.xml
+        tvDashCrop = findViewById(R.id.tvDashCrop);
+        tvDashInfo = findViewById(R.id.tvDashInfo);
+        tvDashStage = findViewById(R.id.tvDashStage);
+        tvDashActivity = findViewById(R.id.tvDashActivity);
+        tvSowingDateDisplay = findViewById(R.id.tvSowingDateDisplay);
+
+        progressGrowth = findViewById(R.id.progressGrowth);
+        btnSetSowingDate = findViewById(R.id.btnSetSowingDate);
+
+        // Get the currently selected crop
+        String cropName = PrefsManager.getString(
+                this,
+                PrefsManager.KEY_SELECTED_CROP,
+                null
         );
 
-        String cropName =
-                PrefsManager.getString(
-                        this,
-                        PrefsManager.KEY_SELECTED_CROP,
-                        null
-                );
-
-        if (cropName == null) {
-
+        if (cropName == null || cropName.trim().isEmpty()) {
             Toast.makeText(
                     this,
                     "Please select a crop first",
@@ -56,171 +69,152 @@ public class CropDashboardActivity
             ).show();
 
             startActivity(
-                    new Intent(
-                            this,
-                            CropSelectionActivity.class
-                    )
+                    new Intent(this, CropSelectionActivity.class)
             );
 
             finish();
             return;
         }
 
+        // Load crop details and its growth guide
         loadCrop(cropName);
 
-        Button btnSowing =
-                findViewById(
-                        R.id.btnSetSowingDate
-                );
-
-        btnSowing.setOnClickListener(
+        // Open the date picker
+        btnSetSowingDate.setOnClickListener(
                 v -> showDatePicker()
         );
 
-        open(
-                R.id.btnCalendar,
-                CropCalendarActivity.class
-        );
-
-        open(
-                R.id.btnFertilizer,
-                FertilizerActivity.class
-        );
-
-        open(
-                R.id.btnPesticide,
-                PesticideActivity.class
-        );
-
-        open(
-                R.id.btnWeather,
-                WeatherActivity.class
-        );
-
-        open(
-                R.id.btnReminders,
-                RemindersActivity.class
-        );
-
-        open(
-                R.id.btnLeafDisease,
-                LeafDiseaseActivity.class
-        );
-
-        findViewById(
-                R.id.btnChangeCrop
-        ).setOnClickListener(
-                v -> startActivity(
-                        new Intent(
-                                this,
-                                CropSelectionActivity.class
-                        )
-                )
-        );
+        // Display the previously saved date, if available
+        updateSowingDateDisplay();
     }
 
     private void loadCrop(String cropName) {
 
-        new FirestoreCropManager()
-                .getCrop(
-                        cropName,
-                        new FirestoreCropManager.OnCropLoadedListener() {
+        new FirestoreCropManager().getCrop(
+                cropName,
+                new FirestoreCropManager.OnCropLoadedListener() {
 
-                            @Override
-                            public void onSuccess(Crop loadedCrop) {
+                    @Override
+                    public void onSuccess(Crop loadedCrop) {
 
-                                crop = loadedCrop;
-
-                                TextView title =
-                                        findViewById(
-                                                R.id.tvDashCrop
-                                        );
-
-                                TextView info =
-                                        findViewById(
-                                                R.id.tvDashInfo
-                                        );
-
-                                title.setText(
-                                        crop.getName()
-                                );
-
-                                info.setText(
-                                        "Season: "
-                                                + crop.getSuitableSeasonsText()
-                                                + " | Water: "
-                                                + crop.getWaterRequirement()
-                                                + " | Duration: "
-                                                + crop.getGrowthDuration()
-                                );
-
-                                loadGuide(cropName);
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-
-                                Toast.makeText(
-                                        CropDashboardActivity.this,
-                                        "Could not load crop: "
-                                                + e.getMessage(),
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
+                        if (isFinishing() || isDestroyed()) {
+                            return;
                         }
-                );
-    }
 
+                        if (loadedCrop == null) {
+                            Toast.makeText(
+                                    CropDashboardActivity.this,
+                                    "Crop details not found.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return;
+                        }
+
+                        crop = loadedCrop;
+
+                        tvDashCrop.setText(crop.getName());
+
+                        tvDashInfo.setText(
+                                "Season: "
+                                        + crop.getSuitableSeasonsText()
+                                        + "  |  Water: "
+                                        + crop.getWaterRequirement()
+                                        + "\nDuration: "
+                                        + crop.getGrowthDuration()
+                        );
+
+                        loadGuide(cropName);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        Toast.makeText(
+                                CropDashboardActivity.this,
+                                "Could not load crop: "
+                                        + e.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
+                    }
+                }
+        );
+    }
     private void loadGuide(String cropName) {
 
-        new FirestoreCropGuideManager()
-                .getGuide(
-                        cropName,
-                        new FirestoreCropGuideManager.OnGuideLoadedListener() {
+        new FirestoreCropGuideManager().getGuide(
+                cropName,
+                new FirestoreCropGuideManager.OnGuideLoadedListener() {
 
-                            @Override
-                            public void onSuccess(
-                                    FirestoreCropGuideManager.CropGuide loadedGuide) {
+                    @Override
+                    public void onSuccess(
+                            FirestoreCropGuideManager.CropGuide loadedGuide) {
 
-                                guide = loadedGuide;
-
-                                refreshStageCard();
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-
-                                Toast.makeText(
-                                        CropDashboardActivity.this,
-                                        "Could not load crop guide",
-                                        Toast.LENGTH_SHORT
-                                ).show();
-                            }
+                        if (isFinishing() || isDestroyed()) {
+                            return;
                         }
-                );
+
+                        guide = loadedGuide;
+                        refreshStageCard();
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+
+                        if (isFinishing() || isDestroyed()) {
+                            return;
+                        }
+
+                        Toast.makeText(
+                                CropDashboardActivity.this,
+                                "Could not load crop growth guide.",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }
+        );
     }
 
     @Override
     protected void onResume() {
-
         super.onResume();
+
+        updateSowingDateDisplay();
 
         if (guide != null) {
             refreshStageCard();
         }
     }
 
-    private void open(
-            int buttonId,
-            Class<?> target) {
+    private void updateSowingDateDisplay() {
 
-        findViewById(buttonId)
-                .setOnClickListener(
-                        v -> startActivity(
-                                new Intent(this, target)
-                        )
-                );
+        if (tvSowingDateDisplay == null) {
+            return;
+        }
+
+        if (!CropStageHelper.hasSowingDate(this)) {
+
+            tvSowingDateDisplay.setText(
+                    "Select your sowing date"
+            );
+
+            return;
+        }
+
+        String date = new SimpleDateFormat(
+                "dd MMMM yyyy",
+                Locale.getDefault()
+        ).format(
+                new Date(CropStageHelper.getSowingDate(this))
+        );
+
+        tvSowingDateDisplay.setText(date);
     }
+
+
 
     private void refreshStageCard() {
 
@@ -228,99 +222,92 @@ public class CropDashboardActivity
             return;
         }
 
-        TextView tvStage =
-                findViewById(R.id.tvDashStage);
-
-        TextView tvActivity =
-                findViewById(R.id.tvDashActivity);
-
-        ProgressBar progress =
-                findViewById(R.id.progressGrowth);
-
-        Button btnSowing =
-                findViewById(R.id.btnSetSowingDate);
-
         List<FirestoreCropGuideManager.StageData> stages =
                 guide.stages;
 
-        if (stages.isEmpty()) {
+        if (stages == null || stages.isEmpty()) {
+
+            tvDashStage.setText("Growth stages unavailable");
+
+            tvDashActivity.setText(
+                    "Crop growth information is not available yet."
+            );
+
+            progressGrowth.setProgress(0);
             return;
         }
 
+        // If the user has not selected a sowing date
         if (!CropStageHelper.hasSowingDate(this)) {
 
-            tvStage.setText(
-                    "Sowing date not set"
+            tvDashStage.setText("Sowing date not set");
+
+            tvDashActivity.setText(
+                    "Set your sowing date to view your crop's "
+                            + "current growth stage and daily guidance."
             );
 
-            tvActivity.setText(
-                    "Set your sowing date to see the growth stage, fertilizer timing and reminders."
-            );
+            progressGrowth.setProgress(0);
 
-            progress.setProgress(0);
+            btnSetSowingDate.setText("Choose Sowing Date");
 
-            btnSowing.setText(
-                    "Set Sowing Date"
-            );
-
+            updateSowingDateDisplay();
             return;
         }
 
-        String date =
-                new SimpleDateFormat(
-                        "dd MMM yyyy",
-                        Locale.getDefault()
-                ).format(
-                        new Date(
-                                CropStageHelper.getSowingDate(this)
-                        )
-                );
+        updateSowingDateDisplay();
 
-        btnSowing.setText(
-                "Sowing date: "
-                        + date
-                        + " (tap to change)"
+        int days = CropStageHelper.getDaysSinceSowing(this);
+
+        int index = CropStageHelper.getCurrentStageIndex(
+                this,
+                stages
         );
 
-        int days =
-                CropStageHelper.getDaysSinceSowing(this);
+        int total = Math.max(
+                stages.get(stages.size() - 1).getEndDay(),
+                1
+        );
 
-        int index =
-                CropStageHelper.getCurrentStageIndex(
-                        this,
-                        stages
-                );
-
+        // Sowing date is in the future
         if (days < 0) {
 
-            tvStage.setText(
-                    "Sowing starts in "
-                            + (-days)
-                            + " day(s)"
+            tvDashStage.setText(
+                    "Sowing in " + (-days) + " day(s)"
             );
 
-            tvActivity.setText(
-                    "Prepare the field before sowing."
+            tvDashActivity.setText(
+                    "Get your field ready before sowing."
             );
 
-            progress.setProgress(0);
-
+            progressGrowth.setProgress(0);
             return;
         }
 
+        // Display the final stage if the crop duration has passed
         if (index < 0) {
+
+            FirestoreCropGuideManager.StageData lastStage =
+                    stages.get(stages.size() - 1);
+
+            tvDashStage.setText(
+                    "Day " + days + " • " + lastStage.getName()
+            );
+
+            tvDashActivity.setText(
+                    "Estimated crop duration: "
+                            + total
+                            + " days. Check the crop before harvesting."
+            );
+
+            progressGrowth.setProgress(100);
             return;
         }
 
         FirestoreCropGuideManager.StageData stage =
                 stages.get(index);
 
-        int total =
-                stages.get(
-                        stages.size() - 1
-                ).getEndDay();
-
-        tvStage.setText(
+        tvDashStage.setText(
                 "Day "
                         + days
                         + " of ~"
@@ -329,65 +316,71 @@ public class CropDashboardActivity
                         + stage.getName()
         );
 
-        tvActivity.setText(
-                "Now: "
+        tvDashActivity.setText(
+                "Today's guidance: "
                         + stage.getActivity()
         );
 
-        progress.setProgress(
-                Math.min(
-                        100,
-                        days * 100 / Math.max(total, 1)
-                )
+        int percentage = Math.min(
+                100,
+                Math.max(0, days * 100 / total)
         );
+
+        progressGrowth.setProgress(percentage);
     }
+
 
     private void showDatePicker() {
 
-        Calendar cal =
-                Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
 
         if (CropStageHelper.hasSowingDate(this)) {
 
-            cal.setTimeInMillis(
+            calendar.setTimeInMillis(
                     CropStageHelper.getSowingDate(this)
             );
         }
 
-        new DatePickerDialog(
+        DatePickerDialog datePicker = new DatePickerDialog(
                 this,
                 (view, year, month, day) -> {
 
-                    Calendar picked =
-                            Calendar.getInstance();
+                    Calendar pickedDate = Calendar.getInstance();
 
-                    picked.clear();
+                    pickedDate.clear();
 
-                    picked.set(
+                    pickedDate.set(
                             year,
                             month,
-                            day
+                            day,
+                            12,
+                            0,
+                            0
                     );
 
                     PrefsManager.saveLong(
                             this,
                             PrefsManager.KEY_SOWING_DATE,
-                            picked.getTimeInMillis()
+                            pickedDate.getTimeInMillis()
                     );
 
                     ReminderManager.cancelAll(this);
+
+                    updateSowingDateDisplay();
+                    refreshStageCard();
 
                     Toast.makeText(
                             this,
                             "Sowing date saved.",
                             Toast.LENGTH_SHORT
                     ).show();
-
-                    refreshStageCard();
                 },
-                cal.get(Calendar.YEAR),
-                cal.get(Calendar.MONTH),
-                cal.get(Calendar.DAY_OF_MONTH)
-        ).show();
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+        );
+
+
+        datePicker.show();
     }
 }

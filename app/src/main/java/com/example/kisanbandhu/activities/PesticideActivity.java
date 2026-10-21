@@ -12,10 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kisanbandhu.R;
 import com.example.kisanbandhu.adapters.InfoAdapter;
-import com.example.kisanbandhu.data.CropData;
-import com.example.kisanbandhu.models.Crop;
 import com.example.kisanbandhu.models.InfoItem;
 import com.example.kisanbandhu.utils.FirestoreCropGuideManager;
+import com.example.kisanbandhu.utils.PrefsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,11 @@ import java.util.List;
 public class PesticideActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private TextView tvTitle;
+    private TextView tvSubtitle;
     private TextView tvEmpty;
+
+    private String selectedCropName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,36 +34,62 @@ public class PesticideActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_screen);
 
         recyclerView = findViewById(R.id.recyclerView);
+        tvTitle = findViewById(R.id.tvTitle);
+        tvSubtitle = findViewById(R.id.tvSubtitle);
         tvEmpty = findViewById(R.id.tvEmpty);
 
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(this)
         );
 
-        Crop crop = CropData.getSelectedCrop(this);
+        selectedCropName = cleanCropName(
+                PrefsManager.getString(
+                        this,
+                        PrefsManager.KEY_SELECTED_CROP,
+                        null
+                )
+        );
 
-        if (crop == null) {
+        if (selectedCropName == null) {
+
             Toast.makeText(
                     this,
                     "Please select a crop first",
                     Toast.LENGTH_SHORT
             ).show();
+
             finish();
             return;
         }
 
-        TextView title = findViewById(R.id.tvTitle);
-        TextView subtitle = findViewById(R.id.tvSubtitle);
-
-        title.setText(
-                crop.getName() + " Pests & Diseases"
+        tvTitle.setText(
+                selectedCropName + " Pests & Diseases"
         );
 
-        subtitle.setText(
+        tvSubtitle.setText(
                 "Chemical and natural pest-control guidance"
         );
 
-        loadGuide(crop.getName());
+        tvEmpty.setVisibility(View.GONE);
+
+        loadGuide(selectedCropName);
+    }
+
+    private String cleanCropName(String cropName) {
+
+        if (cropName == null) {
+            return null;
+        }
+
+        cropName = cropName.trim();
+
+        if (cropName.isEmpty()
+                || cropName.equalsIgnoreCase("null")
+                || cropName.equalsIgnoreCase("undefined")) {
+            return null;
+        }
+
+        return cropName;
     }
 
     private void loadGuide(String cropName) {
@@ -76,6 +105,13 @@ public class PesticideActivity extends AppCompatActivity {
                     public void onSuccess(
                             FirestoreCropGuideManager.CropGuide guide) {
 
+                        if (guide == null) {
+                            showEmptyState(
+                                    "No pest information available for this crop yet."
+                            );
+                            return;
+                        }
+
                         showGuide(guide);
                     }
 
@@ -88,6 +124,10 @@ public class PesticideActivity extends AppCompatActivity {
                                         + e.getMessage(),
                                 Toast.LENGTH_LONG
                         ).show();
+
+                        showEmptyState(
+                                "Could not load pest information."
+                        );
                     }
                 }
         );
@@ -96,59 +136,100 @@ public class PesticideActivity extends AppCompatActivity {
     private void showGuide(
             FirestoreCropGuideManager.CropGuide guide) {
 
+        // Never use guide.cropName to construct the title.
+        // It may be null even when a crop has been selected.
+        tvTitle.setText(
+                selectedCropName + " Pests & Diseases"
+        );
+
+        tvSubtitle.setText(
+                "Chemical and natural pest-control guidance"
+        );
+
         List<InfoItem> items = new ArrayList<>();
 
-        for (
-                FirestoreCropGuideManager.PestData pest
-                : guide.pests
-        ) {
+        if (guide.pests != null) {
 
-            String name = pest.getName();
+            for (FirestoreCropGuideManager.PestData pest
+                    : guide.pests) {
 
-            String symptoms = pest.getSymptoms();
+                if (pest == null) {
+                    continue;
+                }
 
-            String chemical = pest.getChemicalControl();
+                String name = pest.getName();
+                String symptoms = pest.getSymptoms();
+                String chemical = pest.getChemicalControl();
+                String organic = pest.getOrganicControl();
 
-            String organic = pest.getOrganicControl();
+                // Prevent missing Firestore fields from showing "null".
+                name = safeText(name, "Pest information");
+                symptoms = safeText(
+                        symptoms,
+                        "No symptom information available."
+                );
+                chemical = safeText(
+                        chemical,
+                        "No chemical control information available."
+                );
+                organic = safeText(
+                        organic,
+                        "No natural or organic control information available."
+                );
 
-            String body =
-                    "Symptoms:\n"
-                            + symptoms
-                            + "\n\nChemical control:\n"
-                            + chemical
-                            + "\n\nNatural / Organic control:\n"
-                            + organic;
+                String body =
+                        "Symptoms:\n"
+                                + symptoms
+                                + "\n\nChemical control:\n"
+                                + chemical
+                                + "\n\nNatural / Organic control:\n"
+                                + organic;
 
-            items.add(
-                    new InfoItem(
-                            name,
-                            "",
-                            Color.BLACK,
-                            body,
-                            false
-                    )
-            );
+                items.add(
+                        new InfoItem(
+                                name,
+                                "",
+                                Color.BLACK,
+                                body,
+                                false
+                        )
+                );
+            }
         }
 
         if (items.isEmpty()) {
 
-            tvEmpty.setText(
+            showEmptyState(
                     "No pest information available for this crop yet."
             );
-
-            tvEmpty.setVisibility(View.VISIBLE);
-
-            recyclerView.setVisibility(View.GONE);
 
         } else {
 
             tvEmpty.setVisibility(View.GONE);
-
             recyclerView.setVisibility(View.VISIBLE);
 
             recyclerView.setAdapter(
                     new InfoAdapter(items)
             );
         }
+    }
+
+    private String safeText(String value, String fallback) {
+
+        if (value == null
+                || value.trim().isEmpty()
+                || value.trim().equalsIgnoreCase("null")
+                || value.trim().equalsIgnoreCase("undefined")) {
+            return fallback;
+        }
+
+        return value.trim();
+    }
+
+    private void showEmptyState(String message) {
+
+        tvEmpty.setText(message);
+        tvEmpty.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.GONE);
     }
 }

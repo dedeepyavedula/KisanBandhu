@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="soil_type_array">
+        <item>Select Soil Type</item>
+        <item>Alluvial</item>
+        <item>Black</item>
+        <item>Red</item>
+        <item>Laterite</item>
+        <item>Loamy</item>
+        <item>Sandy</item>
+        <item>Clayey</item>
+    </string-array>
+
+    <string-array name="fertility_array">
+        <item>Select Fertility</item>
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+
+    <string-array name="state_array">
+        <item>Select State</item>
+        <item>Andhra Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chhattisgarh</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Odisha</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Tamil Nadu</item>
+        <item>Telangana</item>
+        <item>Uttar Pradesh</item>
+        <item>Uttarakhand</item>
+        <item>West Bengal</item>
+    </string-array>
+
+    <string-array name="season_array">
+        <item>Select Season</item>
+        <item>Kharif</item>
+        <item>Rabi</item>
+        <item>Zaid</item>
+    </string-array>
+
+</resources>

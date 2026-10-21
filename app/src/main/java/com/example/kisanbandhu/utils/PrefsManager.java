@@ -1,20 +1,13 @@
-// FILE: app/src/main/java/com/example/kisanbandhu/utils/PrefsManager.java
+
 package com.example.kisanbandhu.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.kisanbandhu.models.Soil;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-/**
- * Central place for reading/writing simple app data using
- * SharedPreferences (as required by the project spec instead of a
- * database for this college version).
- *
- * Every other Activity should go through this class rather than
- * calling getSharedPreferences() directly - keeps all the key names
- * in one place and avoids typos.
- */
 public class PrefsManager {
 
     private static final String PREFS_NAME = "KisanBandhuPrefs";
@@ -29,69 +22,119 @@ public class PrefsManager {
     private static final String KEY_SEASON = "season";
     private static final String KEY_PROFILE_SAVED = "profile_saved";
 
-    // Keys used in later phases (declared now so all Activities can rely on them)
+    // Crop keys
     public static final String KEY_SELECTED_CROP = "selected_crop";
     public static final String KEY_SOWING_DATE = "sowing_date_millis";
 
     private static SharedPreferences prefs(Context context) {
-        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return context.getApplicationContext().getSharedPreferences(
+                PREFS_NAME,
+                Context.MODE_PRIVATE
+        );
     }
 
-    /** Saves the farmer's soil profile. Called from SoilInputActivity. */
+    /*
+     * Each Firebase user gets separate preference keys.
+     * A signed-out session cannot read another user's values.
+     */
+    private static String userKey(Context context, String key) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        String uid = user != null
+                ? user.getUid()
+                : "signed_out";
+
+        return uid + "_" + key;
+    }
+
     public static void saveSoilProfile(Context context, Soil soil) {
+        if (soil == null) return;
+
         SharedPreferences.Editor editor = prefs(context).edit();
-        editor.putString(KEY_SOIL_TYPE, soil.getSoilType());
-        editor.putString(KEY_SOIL_PH, soil.getSoilPH());
-        editor.putString(KEY_FERTILITY, soil.getFertility());
-        editor.putString(KEY_STATE, soil.getState());
-        editor.putString(KEY_DISTRICT, soil.getDistrict());
-        editor.putBoolean(KEY_IRRIGATED, soil.isIrrigated());
-        editor.putString(KEY_SEASON, soil.getSeason());
-        editor.putBoolean(KEY_PROFILE_SAVED, true);
+
+        editor.putString(userKey(context, KEY_SOIL_TYPE), soil.getSoilType());
+        editor.putString(userKey(context, KEY_SOIL_PH), soil.getSoilPH());
+        editor.putString(userKey(context, KEY_FERTILITY), soil.getFertility());
+        editor.putString(userKey(context, KEY_STATE), soil.getState());
+        editor.putString(userKey(context, KEY_DISTRICT), soil.getDistrict());
+        editor.putBoolean(userKey(context, KEY_IRRIGATED), soil.isIrrigated());
+        editor.putString(userKey(context, KEY_SEASON), soil.getSeason());
+        editor.putBoolean(userKey(context, KEY_PROFILE_SAVED), true);
+
         editor.apply();
     }
 
-    /** Returns true if the farmer has filled the soil form at least once. */
     public static boolean hasSoilProfile(Context context) {
-        return prefs(context).getBoolean(KEY_PROFILE_SAVED, false);
+        return prefs(context).getBoolean(
+                userKey(context, KEY_PROFILE_SAVED),
+                false
+        );
     }
 
-    /**
-     * Rebuilds a Soil object from what was saved earlier.
-     * Returns null if nothing has been saved yet - callers must check
-     * hasSoilProfile() first (or handle null).
-     */
     public static Soil getSoilProfile(Context context) {
         if (!hasSoilProfile(context)) {
             return null;
         }
+
         SharedPreferences p = prefs(context);
+
         return new Soil(
-                p.getString(KEY_SOIL_TYPE, ""),
-                p.getString(KEY_SOIL_PH, ""),
-                p.getString(KEY_FERTILITY, ""),
-                p.getString(KEY_STATE, ""),
-                p.getString(KEY_DISTRICT, ""),
-                p.getBoolean(KEY_IRRIGATED, false),
-                p.getString(KEY_SEASON, "")
+                p.getString(userKey(context, KEY_SOIL_TYPE), ""),
+                p.getString(userKey(context, KEY_SOIL_PH), ""),
+                p.getString(userKey(context, KEY_FERTILITY), ""),
+                p.getString(userKey(context, KEY_STATE), ""),
+                p.getString(userKey(context, KEY_DISTRICT), ""),
+                p.getBoolean(userKey(context, KEY_IRRIGATED), false),
+                p.getString(userKey(context, KEY_SEASON), "")
         );
     }
 
-    // ---- Generic helpers reused by later phases (crop selection, sowing date) ----
+    public static void saveString(
+            Context context,
+            String key,
+            String value
+    ) {
+        SharedPreferences.Editor editor = prefs(context).edit();
+        String scopedKey = userKey(context, key);
 
-    public static void saveString(Context context, String key, String value) {
-        prefs(context).edit().putString(key, value).apply();
+        if (value == null) {
+            editor.remove(scopedKey);
+        } else {
+            editor.putString(scopedKey, value);
+        }
+
+        editor.apply();
     }
 
-    public static String getString(Context context, String key, String defaultValue) {
-        return prefs(context).getString(key, defaultValue);
+    public static String getString(
+            Context context,
+            String key,
+            String defaultValue
+    ) {
+        return prefs(context).getString(
+                userKey(context, key),
+                defaultValue
+        );
     }
 
-    public static void saveLong(Context context, String key, long value) {
-        prefs(context).edit().putLong(key, value).apply();
+    public static void saveLong(
+            Context context,
+            String key,
+            long value
+    ) {
+        prefs(context).edit()
+                .putLong(userKey(context, key), value)
+                .apply();
     }
 
-    public static long getLong(Context context, String key, long defaultValue) {
-        return prefs(context).getLong(key, defaultValue);
+    public static long getLong(
+            Context context,
+            String key,
+            long defaultValue
+    ) {
+        return prefs(context).getLong(
+                userKey(context, key),
+                defaultValue
+        );
     }
 }
