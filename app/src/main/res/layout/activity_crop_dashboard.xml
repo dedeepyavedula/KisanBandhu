@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <!-- FILE: app/src/main/res/layout/activity_crop_dashboard.xml -->
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F3F6F0"
     android:fillViewport="true"
-    android:background="@color/background_light">
+    android:clipToPadding="false"
+    android:overScrollMode="never">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingStart="22dp"
+        android:paddingTop="22dp"
+        android:paddingEnd="22dp"
+        android:paddingBottom="28dp">
 
-        <!-- BLOCK 1: CROP INFORMATION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KisanBandhu"
+            android:textColor="#52745A"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvDashCrop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Groundnut"
-            android:textColor="@color/green_dark"
+            android:layout_marginTop="12dp"
+            android:text="Selected crop"
+            android:textColor="#205C2B"
             android:textSize="30sp"
             android:textStyle="bold" />
 
@@ -31,18 +40,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:lineSpacingExtra="3dp"
-            android:textColor="@color/brown_soil"
+            android:text="Season · Water · Duration"
+            android:textColor="#805B4D"
             android:textSize="14sp" />
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="3dp"
-            app:cardUseCompatPadding="true">
+            android:layout_marginTop="24dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="2dp"
+            app:strokeColor="#E2EADF"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -53,19 +63,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="YOUR SELECTED CROP"
-                    android:textColor="@color/green_dark"
-                    android:textSize="11sp"
-                    android:letterSpacing="0.08"
-                    android:textStyle="bold" />
+                    android:text="YOUR CROP CYCLE"
+                    android:textColor="#23622F"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08" />
 
                 <TextView
                     android:id="@+id/tvDashStage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:textColor="@color/text_dark"
-                    android:textSize="18sp"
+                    android:layout_marginTop="16dp"
+                    android:text="Loading current growth stage…"
+                    android:textColor="#262D27"
+                    android:textSize="21sp"
                     android:textStyle="bold" />
 
                 <ProgressBar
@@ -73,306 +84,103 @@
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="8dp"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="18dp"
                     android:max="100"
-                    android:progressTint="@color/green_dark"
-                    android:progressBackgroundTint="#E5EBDD" />
+                    android:progress="0"
+                    android:progressTint="#23622F"
+                    android:progressBackgroundTint="#E8EEE4" />
 
                 <TextView
                     android:id="@+id/tvDashActivity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:lineSpacingExtra="4dp"
-                    android:textColor="@color/text_dark"
-                    android:textSize="14sp" />
-
+                    android:layout_marginTop="16dp"
+                    android:lineSpacingExtra="3dp"
+                    android:text="Your stage-specific crop guidance will appear here."
+                    android:textColor="#424A43"
+                    android:textSize="15sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
+        <Button
+            android:id="@+id/btnSetSowingDate"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="18dp"
+            android:backgroundTint="#23622F"
+            android:text="Set Sowing Date"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
-        <!-- BLOCK 2: SOWING DATE -->
-
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/btnCalendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="3dp"
-            app:cardUseCompatPadding="true">
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardBackgroundColor="#EAF1E6"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="#E0E9DB"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="14dp">
+
+                <FrameLayout
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_icon_white">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="▦"
+                        android:textColor="#347746"
+                        android:textSize="25sp" />
+                </FrameLayout>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:background="#EAF2DF"
-                        android:gravity="center"
-                        android:text="📅"
-                        android:textSize="22sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="14dp"
-                        android:layout_weight="1"
-                        android:text="Sowing Date"
-                        android:textColor="@color/text_dark"
-                        android:textSize="19sp"
+                        android:text="Crop Calendar"
+                        android:textColor="#2D4833"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:text="View growth-stage dates and daily guidance"
+                        android:textColor="#728071"
+                        android:textSize="12sp" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvSowingDateDisplay"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:background="#F0F5E9"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:text="Select your sowing date"
-                    android:textColor="@color/green_dark"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btnSetSowingDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:backgroundTint="@color/green_dark"
-                    android:text="Change Sowing Date"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
-
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:contentDescription="Open crop calendar"
+                    android:src="@drawable/ic_chevron_right"
+                    app:tint="#6F866F" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-
-        <!-- BLOCK 3: CROP CYCLE -->
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="20dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="3dp"
-            app:cardUseCompatPadding="true">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="🌱  Crop Cycle"
-                    android:textColor="@color/text_dark"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Your crop's journey from sowing to harvest"
-                    android:textColor="@color/brown_soil"
-                    android:textSize="13sp" />
-
-                <!-- Crop cycle stages -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <!-- Sowing -->
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:background="#F1E6D2"
-                            android:gravity="center"
-                            android:text="🌰"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Sowing"
-                            android:textColor="@color/text_dark"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Day 0"
-                            android:textColor="@color/brown_soil"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="···"
-                        android:textColor="@color/green_dark"
-                        android:textSize="18sp" />
-
-                    <!-- Germination -->
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:background="#EAF2DF"
-                            android:gravity="center"
-                            android:text="🌱"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Sprouting"
-                            android:textColor="@color/text_dark"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Early days"
-                            android:textColor="@color/brown_soil"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="···"
-                        android:textColor="@color/green_dark"
-                        android:textSize="18sp" />
-
-                    <!-- Flowering -->
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:background="#FFF0C9"
-                            android:gravity="center"
-                            android:text="🌼"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Flowering"
-                            android:textColor="@color/text_dark"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Mid-stage"
-                            android:textColor="@color/brown_soil"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="···"
-                        android:textColor="@color/green_dark"
-                        android:textSize="18sp" />
-
-                    <!-- Harvest -->
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="52dp"
-                            android:layout_height="52dp"
-                            android:background="#FBE4D8"
-                            android:gravity="center"
-                            android:text="🫘"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Harvest"
-                            android:textColor="@color/text_dark"
-                            android:textSize="13sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
-                            android:text="Final stage"
-                            android:textColor="@color/brown_soil"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </ScrollView>

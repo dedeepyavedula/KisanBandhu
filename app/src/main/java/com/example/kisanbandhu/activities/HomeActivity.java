@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.example.kisanbandhu.R;
@@ -35,7 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
 
     // ================= WEATHER =================
 
@@ -305,6 +304,15 @@ public class HomeActivity extends AppCompatActivity {
                 openForCrop(
                         CropDashboardActivity.class
                 )
+        );
+
+        // This compact home card lets the farmer change their selected crop.
+        CardView cardCropCycle = findViewById(R.id.cardCropCycle);
+        cardCropCycle.setOnClickListener(v ->
+                startActivity(new Intent(
+                        HomeActivity.this,
+                        CropSelectionActivity.class
+                ))
         );
     }
 
